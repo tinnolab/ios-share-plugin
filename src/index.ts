@@ -4,25 +4,27 @@ import {
   withPlugins,
 } from "@expo/config-plugins";
 
+import { Parameters } from "./constants";
 import { withAppEntitlements } from "./withAppEntitlements";
 import { withShareExtensionConfig } from "./withShareExtensionConfig";
 import { withShareExtensionXcodeTarget } from "./withShareExtensionXcodeTarget";
 
-let pkg: { name: string; version?: string } = {
+const pkg: { name: string; version?: string } = {
   name: "expo-config-plugin-ios-share-extension",
   version: "UNVERSIONED",
 };
 
-const withShareMenu: ConfigPlugin = createRunOncePlugin(
-  (config) => {
+const withShareMenu: ConfigPlugin<Parameters> = createRunOncePlugin(
+  (config, params) => {
     return withPlugins(config, [
       withAppEntitlements,
       withShareExtensionConfig,
-      withShareExtensionXcodeTarget,
+      () => withShareExtensionXcodeTarget(config, params),
+      // withShareExtensionXcodeTarget,
     ]);
   },
   pkg.name,
-  pkg.version
+  pkg.version,
 );
 
 export default withShareMenu;
